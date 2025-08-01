@@ -1,0 +1,14 @@
+# Node dependencies
+node_modules/
+frontend/node_modules/
+
+# Python virtual env
+venv/
+backend/.env
+
+# Bytecode files
+__pycache__/
+
+# OS files
+*.DS_Store
+Thumbs.db
