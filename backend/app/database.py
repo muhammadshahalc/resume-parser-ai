@@ -39,11 +39,11 @@ async def save_resume_result(data: dict):
         data.get('name'),
         data.get('email'),
         data.get('phone'),
-        json.dumps(data.get('skills', [])),      # ✅ Convert list to JSON string
-        json.dumps(data.get('education', [])),   # ✅ Convert list to JSON string
-        json.dumps(data.get('experience', [])),  # ✅ Convert list to JSON string
+        json.dumps(data.get('skills', [])),     
+        json.dumps(data.get('education', [])),   
+        json.dumps(data.get('experience', [])),  
         data.get('match_score', 0),
-        json.dumps(data))                        # ✅ Convert full dict to JSON string
+        json.dumps(data))                        
         await conn.close()
     except Exception as e:
         raise HTTPException(500, f"Database error: {str(e)}")

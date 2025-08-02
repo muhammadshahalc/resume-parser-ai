@@ -6,7 +6,7 @@ import os
 
 app = FastAPI()
 
-# ✅ Apply CORS settings
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:3000"],  # React dev server
@@ -15,14 +15,14 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# ✅ Company Requirements
+
 COMPANY_REQUIREMENTS = {
     "skills": ["Python", "SQL", "Machine Learning", "Pandas", "Deep Learning"],
     "education_keywords": ["B.Tech", "Bachelor of Technology", "Computer Science"],
     "experience_years_required": 1
 }
 
-# ✅ Main route for parsing
+
 @app.post("/api/parse")
 async def parse_resume_route(file: UploadFile):
     if not file.filename.lower().endswith(('.pdf', '.docx')):
@@ -30,15 +30,15 @@ async def parse_resume_route(file: UploadFile):
     
     temp_path = None
     try:
-        # Save temp file
+        
         temp_path = f"temp_{file.filename}"
         with open(temp_path, "wb") as buffer:
             buffer.write(await file.read())
         
-        # Parse resume with company requirements
+        
         result = parse_resume(temp_path, COMPANY_REQUIREMENTS)
         
-        # Save to DB
+        
         await save_resume_result(result)
         
         return {
