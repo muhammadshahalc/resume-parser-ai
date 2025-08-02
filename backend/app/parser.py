@@ -5,10 +5,10 @@ import docx2txt
 import spacy
 from typing import List, Dict, Optional
 
-# Load NLP model (cache this in FastAPI app startup)
+# Load NLP model
 nlp = spacy.load("en_core_web_sm")
 
-# --- Text Extraction ---
+# Text Extraction
 def extract_text_from_pdf(file_path: str) -> str:
     """Extract text from PDF with proper page separation"""
     text = ""
@@ -29,7 +29,7 @@ def clean_text(text: str) -> str:
     text = re.sub(r'[^\S\n]+', ' ', text)  # Collapse spaces (except newlines)
     return text.strip()
 
-# --- Entity Extraction ---
+# Entity Extraction
 def extract_entities(text: str) -> Dict[str, Optional[str]]:
     """
     Extract name (from first 2 lines), email, and phone.
@@ -45,11 +45,11 @@ def extract_entities(text: str) -> Dict[str, Optional[str]]:
             name = ent.text.split('\n')[0].strip()  # Fix: Trim after newline
             break
     
-    # Fallback: Use first line if no PERSON entity found
+    # Use first line if no PERSON entity found
     if not name:
         name = text.split('\n')[0].strip().split('\t')[0].strip()
     
-    # Extract email and phone (with validation)
+    # Extract email and phone
     email_match = re.search(r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b', text)
     phone_match = re.search(r'(\+?\d[\d\s\-()]{7,}\d)', text)
     
@@ -59,7 +59,7 @@ def extract_entities(text: str) -> Dict[str, Optional[str]]:
         "phone": phone_match.group(1) if phone_match else None
     }
 
-# --- Skills Extraction ---
+# Skills Extraction
 def extract_skills(text: str, skill_list: List[str]) -> List[str]:
     """Find skills using case-insensitive whole-word matching"""
     found_skills = set()
@@ -72,7 +72,7 @@ def extract_skills(text: str, skill_list: List[str]) -> List[str]:
     
     return sorted(found_skills)
 
-# --- Education Extraction ---
+# Education Extraction
 def extract_education(text: str) -> List[str]:
     """Extract education degrees with flexible matching"""
     patterns = [
@@ -90,7 +90,7 @@ def extract_education(text: str) -> List[str]:
     
     return sorted(found) if found else []
 
-# --- Experience Extraction ---
+# Experience Extraction
 def calculate_experience_years(experience_dates: List[str]) -> float:
     """Calculate total years of experience from date ranges"""
     total_years = 0.0
@@ -120,7 +120,7 @@ def extract_experience(text: str) -> List[str]:
         matches.extend(re.findall(pattern, text))
     return matches
 
-# --- Main Parser ---
+# Main Parser
 def parse_resume(file_path: str, company_requirements: Optional[Dict] = None) -> Dict:
     """Parse resume and return structured data"""
     if file_path.endswith(".pdf"):
@@ -150,7 +150,7 @@ def parse_resume(file_path: str, company_requirements: Optional[Dict] = None) ->
         result["match_score"] = calculate_match_score(result, company_requirements)    
     return result
 
-# --- Matching Algorithm ---
+# Matching Algorithm
 def calculate_match_score(
     candidate_data: Dict,
     company_requirements: Dict
@@ -194,22 +194,4 @@ def calculate_match_score(
     final_score = (score / total_weight) if total_weight > 0 else 0
     return round(final_score, 2)
 
-# --- Example Usage ---
-if __name__ == "__main__":
-    # Example resume parsing
-    resume_path = "C:/Users/pessh/Desktop/resume-parser-ai/backend/resume/resume.pdf"
-    parsed_data = parse_resume("C:/Users/pessh/Desktop/resume-parser-ai/backend/resume/resume.pdf")
-    
-    # Example company requirements
-    company_requirements = {
-        "skills": ["Python", "SQL", "Machine Learning", "Pandas", "Deep Learning"],
-        "education_keywords": ["B.Tech", "Bachelor of Technology", "Computer Science"],
-        "experience_years_required": 1
-    }
-    
-    # Calculate match score
-    parsed_data["match_score"] = calculate_match_score(parsed_data, company_requirements)
-    
-    # Pretty print results
-    from pprint import pprint
-    pprint(parsed_data)
+
