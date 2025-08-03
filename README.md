@@ -1,5 +1,7 @@
 # 🧠 AI Resume Parser Web App
 
+![App Demo](./assets/demo_git.png)
+
 An AI-powered, full-stack web application that parses resumes in PDF/DOCX format, extracts structured information (name, email, phone, skills, education, experience), and evaluates how well a candidate matches company requirements using NLP and a custom scoring algorithm.
 
 ---
